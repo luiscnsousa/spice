@@ -15,8 +15,8 @@
 
 
   <ItemGroup>
-    <Folder Include="Areas\Admin\Controllers\" />
     <Folder Include="Areas\Identity\Pages\Account\Manage\" />
+    <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
 </Project>
