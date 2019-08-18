@@ -132,13 +132,5 @@
 
             return this.View(category);
         }
-
-        // POST - DETAILS
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Details(Category category)
-        {
-            return this.RedirectToAction(nameof(this.Edit), category);
-        }
     }
 }
