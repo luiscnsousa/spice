@@ -115,5 +115,30 @@
 
             return this.RedirectToAction(nameof(this.Index));
         }
+
+        // GET - DETAILS
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (!id.HasValue)
+            {
+                return this.NotFound();
+            }
+
+            var category = await this.db.Category.FindAsync(id.Value);
+            if (category == null)
+            {
+                return this.NotFound();
+            }
+
+            return this.View(category);
+        }
+
+        // POST - DETAILS
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Details(Category category)
+        {
+            return this.RedirectToAction(nameof(this.Edit), category);
+        }
     }
 }
