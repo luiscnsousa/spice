@@ -159,5 +159,25 @@
 
             return this.View(modelVM);
         }
+
+        // GET - DETAILS
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (!id.HasValue)
+            {
+                return this.NotFound();
+            }
+
+            var subCategory = await this.db.SubCategory
+                .Include(s => s.Category)
+                .SingleOrDefaultAsync(s => s.Id == id.Value);
+
+            if (subCategory == null)
+            {
+                return this.NotFound();
+            }
+
+            return this.View(subCategory);
+        }
     }
 }
