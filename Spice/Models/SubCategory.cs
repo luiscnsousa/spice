@@ -10,7 +10,7 @@
         public int Id { get; set; }
 
         [Required]
-        [Display(Name = "Sub Category")]
+        [Display(Name = "SubCategory Name")]
         public string Name { get; set; }
 
         [Required]

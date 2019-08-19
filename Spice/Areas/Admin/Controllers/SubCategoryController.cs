@@ -179,5 +179,45 @@
 
             return this.View(subCategory);
         }
+
+        // GET - DELETE
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (!id.HasValue)
+            {
+                return this.NotFound();
+            }
+
+            var subCategory = await this.db.SubCategory
+                .Include(s => s.Category)
+                .SingleOrDefaultAsync(s => s.Id == id.Value);
+            if (subCategory == null)
+            {
+                return this.NotFound();
+            }
+
+            return this.View(subCategory);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int? id)
+        {
+            if (!id.HasValue)
+            {
+                return this.NotFound();
+            }
+
+            var subCategory = await this.db.SubCategory.FindAsync(id);
+            if (subCategory == null)
+            {
+                return this.View();
+            }
+
+            this.db.Remove(subCategory);
+            await this.db.SaveChangesAsync();
+
+            return this.RedirectToAction(nameof(this.Index));
+        }
     }
 }
