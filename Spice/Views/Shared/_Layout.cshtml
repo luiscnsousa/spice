@@ -37,7 +37,7 @@
                             <div class="dropdown-menu" aria-labelledby="navbarDropDownMenuLink">
                                 <a class="dropdown-item" asp-area="Admin" asp-controller="Category" asp-action="Index">Category</a>
                                 <a class="dropdown-item" asp-area="Admin" asp-controller="SubCategory" asp-action="Index">Sub Category</a>
-                                <a class="dropdown-item">MenuItem</a>
+                                <a class="dropdown-item" asp-area="Admin" asp-controller="MenuItem" asp-action="Index">MenuItem</a>
                                 <a class="dropdown-item">Coupons</a>
                                 <a class="dropdown-item">Users</a>
 
@@ -87,6 +87,7 @@
         </script>
     </environment>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdn.tiny.cloud/1/0dbmbpjo9sliq5pw2zgknvae24gul8qqhsmmjsqkm2874j4j/tinymce/5/tinymce.min.js"></script>
 
     @RenderSection("Scripts", required: false)
 </body>
