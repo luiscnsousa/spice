@@ -182,5 +182,30 @@
 
             return this.RedirectToAction(nameof(this.Index));
         }
+
+        // GET - DETAILS
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (!id.HasValue)
+            {
+                return this.NotFound();
+            }
+
+            this.MenuItemVM.MenuItem = await this.db.MenuItem
+                .Include(m => m.Category)
+                .Include(m => m.SubCategory)
+                .SingleOrDefaultAsync(m => m.Id == id.Value);
+
+            this.MenuItemVM.SubCategory = await this.db.SubCategory
+                .Where(s => s.CategoryId == this.MenuItemVM.MenuItem.CategoryId)
+                .ToListAsync();
+
+            if (this.MenuItemVM.MenuItem == null)
+            {
+                return this.NotFound();
+            }
+
+            return View(this.MenuItemVM);
+        }
     }
 }
