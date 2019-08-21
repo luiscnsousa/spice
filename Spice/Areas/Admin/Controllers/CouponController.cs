@@ -118,5 +118,21 @@
 
             return this.RedirectToAction(nameof(this.Index));
         }
+
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (!id.HasValue)
+            {
+                return this.NotFound();
+            }
+
+            var coupon = await this.db.Coupon.FindAsync(id.Value);
+            if (coupon == null)
+            {
+                return this.NotFound();
+            }
+
+            return this.View(coupon);
+        }
     }
 }
