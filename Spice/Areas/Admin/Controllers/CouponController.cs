@@ -60,5 +60,63 @@
 
             return this.RedirectToAction(nameof(this.Index));
         }
+
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (!id.HasValue)
+            {
+                return this.NotFound();
+            }
+
+            var coupon = await this.db.Coupon.FindAsync(id.Value);
+            if (coupon == null)
+            {
+                return this.NotFound();
+            }
+
+            return this.View(coupon);
+        }
+
+        [HttpPost, ActionName("Edit")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditPOST(Coupon coupon)
+        {
+            if (coupon.Id == 0)
+            {
+                return this.NotFound();
+            }
+
+            if (!this.ModelState.IsValid)
+            {
+                return this.View(coupon);
+            }
+
+            var couponFromDb = await this.db.Coupon.FindAsync(coupon.Id);
+            couponFromDb.MinimumAmount = coupon.MinimumAmount;
+            couponFromDb.Name = coupon.Name;
+            couponFromDb.Discount = coupon.Discount;
+            couponFromDb.CouponType = coupon.CouponType;
+            couponFromDb.IsActive = coupon.IsActive;
+
+            var files = this.HttpContext.Request.Form.Files;
+            if (files.Any())
+            {
+                byte[] p1 = null;
+                using (var fs1 = files[0].OpenReadStream())
+                {
+                    using (var ms1 = new MemoryStream())
+                    {
+                        fs1.CopyTo(ms1);
+                        p1 = ms1.ToArray();
+                    }
+                }
+
+                coupon.Picture = p1;
+            }
+
+            await this.db.SaveChangesAsync();
+
+            return this.RedirectToAction(nameof(this.Index));
+        }
     }
 }
