@@ -134,5 +134,42 @@
 
             return this.View(coupon);
         }
+
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (!id.HasValue)
+            {
+                return this.NotFound();
+            }
+
+            var coupon = await this.db.Coupon.FindAsync(id.Value);
+            if (coupon == null)
+            {
+                return this.NotFound();
+            }
+
+            return this.View(coupon);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeletePOST(int? id)
+        {
+            if (!id.HasValue)
+            {
+                return this.NotFound();
+            }
+
+            var coupon = await this.db.Coupon.FindAsync(id.Value);
+            if (coupon == null)
+            {
+                return this.NotFound();
+            }
+
+            this.db.Coupon.Remove(coupon);
+            await this.db.SaveChangesAsync();
+
+            return this.RedirectToAction(nameof(this.Index));
+        }
     }
 }
