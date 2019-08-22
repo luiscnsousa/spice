@@ -1,12 +1,15 @@
 ﻿namespace Spice.Areas.Admin.Controllers
 {
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     using Spice.Data;
     using Spice.Models;
+    using Spice.Utility;
     using System.Threading.Tasks;
 
     [Area("Admin")]
+    [Authorize(Roles = SD.ManagerUser)]
     public class CategoryController : Controller
     {
         private readonly ApplicationDbContext db;

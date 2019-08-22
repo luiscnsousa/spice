@@ -15,6 +15,7 @@
 
 
   <ItemGroup>
+    <Folder Include="Areas\Admin\Views\User\" />
     <Folder Include="Areas\Identity\Pages\Account\Manage\" />
     <Folder Include="wwwroot\images\" />
   </ItemGroup>

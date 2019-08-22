@@ -1,5 +1,6 @@
 ﻿namespace Spice.Areas.Admin.Controllers
 {
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@
     using System.Threading.Tasks;
 
     [Area("Admin")]
+    [Authorize(Roles = SD.ManagerUser)]
     public class MenuItemController : Controller
     {
         private readonly ApplicationDbContext db;
