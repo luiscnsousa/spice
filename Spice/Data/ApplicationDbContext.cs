@@ -18,5 +18,7 @@
         public DbSet<MenuItem> MenuItem { get; set; }
 
         public DbSet<Coupon> Coupon { get; set; }
+
+        public DbSet<ApplicationUser> ApplicationUser { get; set; }
     }
 }
