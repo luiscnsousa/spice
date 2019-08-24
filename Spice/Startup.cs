@@ -12,6 +12,8 @@ using Spice.Data;
 namespace Spice
 {
     using System;
+    using Spice.Utility;
+    using Stripe;
 
     public class Startup
     {
@@ -34,12 +36,14 @@ namespace Spice
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                    this.Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddDefaultTokenProviders()
                 .AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            services.Configure<StripeSettings>(this.Configuration.GetSection("Stripe"));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
@@ -66,6 +70,7 @@ namespace Spice
                 app.UseHsts();
             }
 
+            StripeConfiguration.SetApiKey(Configuration.GetSection("Stripe")["SecretKey"]);
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();

@@ -4,8 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Spice.Data;
 
 namespace Spice.Data.Migrations
 {
@@ -292,7 +290,7 @@ namespace Spice.Data.Migrations
 
                     b.Property<string>("CouponCode");
 
-                    b.Property<string>("CouponCodeDiscount");
+                    b.Property<double>("CouponCodeDiscount");
 
                     b.Property<DateTime>("OrderDate");
 

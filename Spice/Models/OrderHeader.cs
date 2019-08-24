@@ -1,9 +1,9 @@
 ﻿namespace Spice.Models
 {
-    using Microsoft.EntityFrameworkCore.Metadata.Internal;
     using System;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
+    using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
     public class OrderHeader
     {
@@ -38,7 +38,7 @@
         [Display(Name = "Coupon Code")]
         public string CouponCode { get; set; }
 
-        public string CouponCodeDiscount { get; set; }
+        public double CouponCodeDiscount { get; set; }
 
         public string Status { get; set; }
 

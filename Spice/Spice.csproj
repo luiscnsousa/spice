@@ -11,13 +11,14 @@
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
+    <PackageReference Include="Stripe.net" Version="21.7.0" />
   </ItemGroup>
 
 
   <ItemGroup>
     <Folder Include="Areas\Admin\Views\User\" />
-    <Folder Include="Areas\Customer\Views\Cart\" />
     <Folder Include="Areas\Identity\Pages\Account\Manage\" />
+    <Folder Include="wwwroot\css\images\" />
     <Folder Include="wwwroot\images\" />
   </ItemGroup>
 

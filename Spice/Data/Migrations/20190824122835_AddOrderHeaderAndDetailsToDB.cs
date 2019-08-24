@@ -20,7 +20,7 @@ namespace Spice.Data.Migrations
                     OrderTotal = table.Column<double>(nullable: false),
                     PickupTime = table.Column<DateTime>(nullable: false),
                     CouponCode = table.Column<string>(nullable: true),
-                    CouponCodeDiscount = table.Column<string>(nullable: true),
+                    CouponCodeDiscount = table.Column<double>(nullable: true),
                     Status = table.Column<string>(nullable: true),
                     PaymentStatus = table.Column<string>(nullable: true),
                     Comments = table.Column<string>(nullable: true),
