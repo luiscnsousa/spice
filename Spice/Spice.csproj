@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <Folder Include="Areas\Admin\Views\User\" />
+    <Folder Include="Areas\Customer\Views\Cart\" />
     <Folder Include="Areas\Identity\Pages\Account\Manage\" />
     <Folder Include="wwwroot\images\" />
   </ItemGroup>
