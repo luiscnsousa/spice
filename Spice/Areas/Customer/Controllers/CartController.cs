@@ -306,8 +306,8 @@
 
             await this.db.SaveChangesAsync();
 
-            return this.RedirectToAction("Index", "Home");
-            //return this.RedirectToAction("Confirm", "Order", new { id = this.DetailCart.OrderHeader.Id });
+            //return this.RedirectToAction("Index", "Home");
+            return this.RedirectToAction("Confirm", "Order", new { id = this.DetailCart.OrderHeader.Id });
         }
     }
 }

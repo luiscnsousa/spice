@@ -58,6 +58,16 @@
                             </li>
                         }
 
+                        @if (User.IsInRole(SD.ManagerUser) || User.IsInRole(SD.CustomerEndUser))
+                        {
+                            
+                            <li style="color: white">
+                                <a asp-area="Customer" asp-controller="Order" asp-action="OrderHistory" class="nav-link">
+                                    Order History
+                                </a>
+                            </li>
+                        }
+
                         <li style="color: white">
                             <a asp-area="Customer" asp-controller="Cart" asp-action="Index" class="nav-link">
                                 @{
