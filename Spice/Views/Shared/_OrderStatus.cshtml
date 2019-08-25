@@ -1,22 +1,22 @@
 ﻿@using Spice.Utility
-@model Spice.Models.OrderHeader
+@model string
 @*
     For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 *@
 
-@if (Model.Status == SD.StatusSubmitted)
+@if (Model == SD.StatusSubmitted)
 {
     <img src="~/images/OrderPlaced.png" width="100%" />
 }
-else if (Model.Status == SD.StatusInProcess)
+else if (Model == SD.StatusInProcess)
 {
     <img src="~/images/InKitchen.png" width="100%" />
 }
-else if (Model.Status == SD.StatusReady)
+else if (Model == SD.StatusReady)
 {
     <img src="~/images/ReadyForPickup.png" width="100%" />
 }
-else if (Model.Status == SD.StatusCompleted)
+else if (Model == SD.StatusCompleted)
 {
     <img src="~/images/completed.png" width="100%" />
 }

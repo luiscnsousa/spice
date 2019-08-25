@@ -106,7 +106,7 @@
         {
             var orderHeader = await this.db.OrderHeader.FirstOrDefaultAsync(h => h.Id == id);
 
-            return this.PartialView("_OrderStatus", orderHeader);
+            return this.PartialView("_OrderStatus", orderHeader.Status);
         }
     }
 }
