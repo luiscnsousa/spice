@@ -10,6 +10,7 @@
     using Spice.Data;
     using Spice.Models;
     using Spice.Models.ViewModels;
+    using Spice.Utility;
 
     [Area("Customer")]
     public class OrderController : Controller
@@ -107,6 +108,87 @@
             var orderHeader = await this.db.OrderHeader.FirstOrDefaultAsync(h => h.Id == id);
 
             return this.PartialView("_OrderStatus", orderHeader.Status);
+        }
+
+        [Authorize(Roles = SD.KitchenUser + "," + SD.ManagerUser)]
+        public async Task<IActionResult> ManageOrder()
+        {
+            var orderDetailsVM = new List<OrderDetailsViewModel>();
+
+            var orderHeaderList = await this.db.OrderHeader
+                .Where(h => h.Status == SD.StatusSubmitted || h.Status == SD.StatusInProcess)
+                .OrderByDescending(h => h.PickupTime)
+                .ToListAsync();
+
+            foreach (var item in orderHeaderList)
+            {
+                var individual = new OrderDetailsViewModel
+                {
+                    OrderHeader = item,
+                    OrderDetails = await this.db.OrderDetails
+                        .Where(d => d.OrderId == item.Id)
+                        .ToListAsync()
+                };
+
+                orderDetailsVM.Add(individual);
+            }
+
+            return this.View(orderDetailsVM.OrderBy(d => d.OrderHeader.PickupTime).ToList());
+        }
+
+        [Authorize(Roles = SD.KitchenUser + "," + SD.ManagerUser)]
+        public async Task<IActionResult> OrderPrepare(int orderId)
+        {
+            var orderHeader = await this.db.OrderHeader.FindAsync(orderId);
+
+            if (orderHeader == null)
+            {
+                return this.NotFound();
+            }
+
+            orderHeader.Status = SD.StatusInProcess;
+
+            await this.db.SaveChangesAsync();
+
+            return this.RedirectToAction(nameof(this.ManageOrder), "Order");
+        }
+
+
+        [Authorize(Roles = SD.KitchenUser + "," + SD.ManagerUser)]
+        public async Task<IActionResult> OrderReady(int orderId)
+        {
+            var orderHeader = await this.db.OrderHeader.FindAsync(orderId);
+
+            if (orderHeader == null)
+            {
+                return this.NotFound();
+            }
+
+            orderHeader.Status = SD.StatusReady;
+
+            await this.db.SaveChangesAsync();
+
+            // email logic to notify user that order is ready for pickup
+
+            return this.RedirectToAction(nameof(this.ManageOrder), "Order");
+        }
+
+
+        [Authorize(Roles = SD.KitchenUser + "," + SD.ManagerUser)]
+        public async Task<IActionResult> OrderCancel(int orderId)
+        {
+            var orderHeader = await this.db.OrderHeader.FindAsync(orderId);
+
+            if (orderHeader == null)
+            {
+                return this.NotFound();
+            }
+
+            orderHeader.Status = SD.StatusCancelled;
+
+            await this.db.SaveChangesAsync();
+
+            return this.RedirectToAction(nameof(this.ManageOrder), "Order");
         }
     }
 }
