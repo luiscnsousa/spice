@@ -22,11 +22,6 @@
             this.db = db;
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
-
         [Authorize]
         public async Task<IActionResult> Confirm(int id)
         {
@@ -104,6 +99,14 @@
                 await this.db.ApplicationUser.FirstOrDefaultAsync(u => u.Id == orderDetailViewModel.OrderHeader.UserId);
 
             return this.PartialView("_IndividualOrderDetails", orderDetailViewModel);
+        }
+
+        [Authorize]
+        public async Task<IActionResult> GetOrderStatus(int id)
+        {
+            var orderHeader = await this.db.OrderHeader.FirstOrDefaultAsync(h => h.Id == id);
+
+            return this.PartialView("_OrderStatus", orderHeader);
         }
     }
 }
