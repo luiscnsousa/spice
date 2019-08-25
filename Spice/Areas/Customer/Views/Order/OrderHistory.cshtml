@@ -1,4 +1,5 @@
-﻿@model Spice.Models.ViewModels.OrderListViewModel
+﻿@using Spice.Utility
+@model Spice.Models.ViewModels.OrderListViewModel
 
 @{
     ViewData["Title"] = "OrderHistory";
@@ -42,6 +43,8 @@
                     </th>
                     <th>
                     </th>
+                    <th>
+                    </th>
                 </tr>
                 @foreach (var item in Model.Orders)
                 {
@@ -68,6 +71,14 @@
                             <button type="submit" class="btn btn-success anchorDetail" data-id="@item.OrderHeader.Id" asp-all-route-data-toggle="modal">
                                 <i class="far fa-list-alt"></i> Details
                             </button>
+                        </td>
+                        <td>
+                            @if (item.OrderHeader.Status.ToUpper() != SD.StatusCancelled.ToUpper())
+                            {
+                                <button type="submit" class="btn btn-info anchorStatus" data-id="@item.OrderHeader.Id" asp-all-route-data-toggle="modal">
+                                    <i class="far fa-clock"></i> Status
+                                </button>
+                            }
                         </td>
                     </tr>
                 }
