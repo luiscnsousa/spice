@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Security.Claims;
+    using System.Text;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
@@ -16,7 +17,7 @@
     public class OrderController : Controller
     {
         private readonly ApplicationDbContext db;
-        private int PageSize = 4;
+        private int PageSize = 3;
 
         public OrderController(ApplicationDbContext db)
         {
@@ -189,6 +190,106 @@
             await this.db.SaveChangesAsync();
 
             return this.RedirectToAction(nameof(this.ManageOrder), "Order");
+        }
+
+        [Authorize]
+        public async Task<IActionResult> OrderPickup(
+            int productPage = 1,
+            string searchName = null,
+            string searchPhone = null,
+            string searchEmail = null)
+        {
+            //var claimsIdentity = (ClaimsIdentity)this.User.Identity;
+            //var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+            var param = new StringBuilder();
+            param.Append("/Customer/Order/OrderPickup?productPage=:");
+
+            var orderHeaderQueryable = this.db.OrderHeader
+                .Include(h => h.ApplicationUser)
+                .Where(h => h.Status == SD.StatusReady);
+
+            if (!string.IsNullOrWhiteSpace(searchName))
+            {
+                param.Append($"&{nameof(searchName)}={searchName}");
+
+                orderHeaderQueryable =
+                    orderHeaderQueryable.Where(h => h.PickupName.ToLower().Contains(searchName.ToLower()));
+            }
+
+            if (!string.IsNullOrWhiteSpace(searchPhone))
+            {
+                param.Append($"&{nameof(searchPhone)}={searchPhone}");
+
+                orderHeaderQueryable =
+                    orderHeaderQueryable.Where(h => h.PhoneNumber.ToLower().Contains(searchPhone.ToLower()));
+            }
+
+            if (!string.IsNullOrWhiteSpace(searchEmail))
+            {
+                param.Append($"&{nameof(searchEmail)}={searchEmail}");
+
+                var user = await this.db.ApplicationUser.FirstOrDefaultAsync(u =>
+                    u.Email.ToLower().Contains(searchEmail.ToLower()));
+
+                orderHeaderQueryable =
+                    orderHeaderQueryable.Where(h => h.UserId == user.Id);
+            }
+
+            var orderHeaderList = await orderHeaderQueryable
+                .ToListAsync();
+
+            var orderList = new List<OrderDetailsViewModel>();
+
+            foreach (var item in orderHeaderList)
+            {
+                var individual = new OrderDetailsViewModel
+                {
+                    OrderHeader = item,
+                    OrderDetails = await this.db.OrderDetails
+                        .Where(d => d.OrderId == item.Id)
+                        .ToListAsync()
+                };
+
+                orderList.Add(individual);
+            }
+
+            var orderListVM = new OrderListViewModel
+            {
+                Orders = orderList
+                    .OrderByDescending(p => p.OrderHeader.Id)
+                    .Skip((productPage - 1) * this.PageSize)
+                    .Take(this.PageSize)
+                    .ToList(),
+                PagingInfo = new PagingInfo
+                {
+                    CurrentPage = productPage,
+                    ItemsPerPage = this.PageSize,
+                    TotalItems = orderList.Count,
+                    UrlParam = param.ToString()
+                }
+            };
+
+            return this.View(orderListVM);
+        }
+
+        [HttpPost]
+        [ActionName("OrderPickup")]
+        [Authorize(Roles = SD.FrontDeskUser + "," + SD.ManagerUser)]
+        public async Task<IActionResult> OrderPickupPOST(int orderId)
+        {
+            var orderHeader = await this.db.OrderHeader.FindAsync(orderId);
+
+            if (orderHeader == null)
+            {
+                return this.NotFound();
+            }
+
+            orderHeader.Status = SD.StatusCompleted;
+
+            await this.db.SaveChangesAsync();
+
+            return this.RedirectToAction("OrderPickup", "Order");
         }
     }
 }
