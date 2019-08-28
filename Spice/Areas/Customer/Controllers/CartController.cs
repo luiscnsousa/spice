@@ -6,6 +6,7 @@
     using System.Security.Claims;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Identity.UI.Services;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     using Spice.Data;
@@ -18,10 +19,12 @@
     public class CartController : Controller
     {
         private readonly ApplicationDbContext db;
+        private readonly IEmailSender emailSender;
 
-        public CartController(ApplicationDbContext db)
+        public CartController(ApplicationDbContext db, IEmailSender emailSender)
         {
             this.db = db;
+            this.emailSender = emailSender;
         }
 
         [BindProperty]
@@ -296,6 +299,11 @@
 
             if (charge.Status.ToLower() == "succeeded")
             {
+                await this.emailSender.SendEmailAsync(
+                    (await this.db.Users.FirstOrDefaultAsync(u => u.Id == claim.Value)).Email,
+                    $"Spice - Order created {this.DetailCart.OrderHeader.Id.ToString()}",
+                    "Order has been submitted successfully!");
+
                 this.DetailCart.OrderHeader.PaymentStatus = SD.PaymentStatusApproved;
                 this.DetailCart.OrderHeader.Status = SD.StatusSubmitted;
             }

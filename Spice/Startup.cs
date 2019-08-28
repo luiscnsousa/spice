@@ -12,6 +12,8 @@ using Spice.Data;
 namespace Spice
 {
     using System;
+    using Microsoft.AspNetCore.Identity.UI.Services;
+    using Spice.Services;
     using Spice.Utility;
     using Stripe;
 
@@ -44,6 +46,9 @@ namespace Spice
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.Configure<StripeSettings>(this.Configuration.GetSection("Stripe"));
+
+            services.AddSingleton<IEmailSender, EmailSender>();
+            services.Configure<EmailOptions>(this.Configuration);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 

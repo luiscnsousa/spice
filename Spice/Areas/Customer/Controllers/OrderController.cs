@@ -6,6 +6,7 @@
     using System.Text;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Identity.UI.Services;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     using Spice.Data;
@@ -17,11 +18,13 @@
     public class OrderController : Controller
     {
         private readonly ApplicationDbContext db;
+        private readonly IEmailSender emailSender;
         private int PageSize = 3;
 
-        public OrderController(ApplicationDbContext db)
+        public OrderController(ApplicationDbContext db, IEmailSender emailSender)
         {
             this.db = db;
+            this.emailSender = emailSender;
         }
 
         [Authorize]
@@ -169,7 +172,10 @@
 
             await this.db.SaveChangesAsync();
 
-            // email logic to notify user that order is ready for pickup
+            await this.emailSender.SendEmailAsync(
+                (await this.db.Users.FirstOrDefaultAsync(u => u.Id == orderHeader.UserId)).Email,
+                $"Spice - Order Ready For Pickup {orderHeader.Id.ToString()}",
+                "Order is ready for pickup!");
 
             return this.RedirectToAction(nameof(this.ManageOrder), "Order");
         }
@@ -189,6 +195,11 @@
 
             await this.db.SaveChangesAsync();
 
+            await this.emailSender.SendEmailAsync(
+                (await this.db.Users.FirstOrDefaultAsync(u => u.Id == orderHeader.UserId)).Email,
+                $"Spice - Order Canceled {orderHeader.Id.ToString()}",
+                "Order has been canceled successfully");
+
             return this.RedirectToAction(nameof(this.ManageOrder), "Order");
         }
 
@@ -199,9 +210,6 @@
             string searchPhone = null,
             string searchEmail = null)
         {
-            //var claimsIdentity = (ClaimsIdentity)this.User.Identity;
-            //var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-
             var param = new StringBuilder();
             param.Append("/Customer/Order/OrderPickup?productPage=:");
 
@@ -288,6 +296,11 @@
             orderHeader.Status = SD.StatusCompleted;
 
             await this.db.SaveChangesAsync();
+
+            await this.emailSender.SendEmailAsync(
+                (await this.db.Users.FirstOrDefaultAsync(u => u.Id == orderHeader.UserId)).Email,
+                $"Spice - Order Complete {orderHeader.Id.ToString()}",
+                "Order has been completed successfully!");
 
             return this.RedirectToAction("OrderPickup", "Order");
         }
