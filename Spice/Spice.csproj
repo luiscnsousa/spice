@@ -19,6 +19,7 @@
   <ItemGroup>
     <Folder Include="Areas\Admin\Views\User\" />
     <Folder Include="Areas\Identity\Pages\Account\Manage\" />
+    <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="wwwroot\css\images\" />
     <Folder Include="wwwroot\images\" />
   </ItemGroup>
